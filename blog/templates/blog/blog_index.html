@@ -1,0 +1,75 @@
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Translation Test Blog</title>
+</head>
+<body>
+<div id="content">
+    <div style="border: 2px black solid">
+        {% get_available_languages as LANGUAGES %}
+
+        <select id="choice-lang">
+            {% for LANGUAGE in LANGUAGES %}
+                {% if LANGUAGE_CODE == "en" %}
+                    <option value="{{ LANGUAGE.0 }}">{{ LANGUAGE.0 }}</option>
+                {% else %}
+                    <option value="{{ LANGUAGE.0 }}">{{ LANGUAGE.1 }}</option>
+                {% endif %}
+            {% endfor %}
+
+
+        </select>
+        <button id="change-lang">언어변경</button>
+        <P>{{ LANGUAGES }}</P>
+        <p>Current Language [{{ LANGUAGE_CODE }}]</p>
+        <h2>{{ title }}</h2>
+    </div>
+
+    <p>Current Language [{{ LANGUAGE_CODE }}]</p>
+    {% trans "hihihi" %}
+</div>
+
+</body>
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).on('click', '#change-lang', change_index);
+
+
+    function change_index() {
+        let csrf_token = $.parseHTML('{% csrf_token %}')[0].value;
+        let lang = $("#choice-lang")[0];
+        lang = lang.options[lang.options.selectedIndex].value;
+
+        let data = {
+          csrfmiddlewaretoken: csrf_token,
+          lang : lang
+        };
+
+        let options = {
+            type: "POST",
+            url: "{% url 'blog_ajax_index' %}",
+            data: data,
+            success: change_success,
+            error: change_error
+        };
+        $.ajax(options);
+    }
+
+    function change_success(response) {
+        $('body').empty();
+        $('body').append(response);
+    }
+
+    function change_error(request, status, error) {
+        console.log(status, error);
+    }
+</script>
+</html>

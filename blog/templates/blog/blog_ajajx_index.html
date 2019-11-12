@@ -1,0 +1,18 @@
+{% load i18n %}
+{% get_available_languages as LANGUAGES %}
+
+<select id="choice-lang">
+    {% for LANGUAGE in LANGUAGES %}
+        <option value="{{ LANGUAGE.0 }}">{{ LANGUAGE.1 }}</option>
+    {% endfor %}
+
+
+</select>
+<button id="change-lang">언어변경</button>
+<P>{{ LANGUAGES }}</P>
+<p>Current Language [{{ LANGUAGE_CODE }}]</p>
+<h2>{{ title }}</h2>
+</div>
+
+<p>Current Language [{{ LANGUAGE_CODE }}]</p>
+{% trans "hihihi" %}
